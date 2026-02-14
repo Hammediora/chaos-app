@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Scaffolded for future DB sync ──
+// These models mirror the localStorage data structures
+// Uncomment and run `npx prisma migrate dev` when ready
+
+// model User {
+//   id        String   @id @default(cuid())
+//   email     String?  @unique
+//   name      String?
+//   streak    Streak?
+//   favorites SavedItem[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model SavedItem {
+//   id        String   @id @default(cuid())
+//   type      String   // joke | excuse | roast | fact | meme | corporate
+//   text      String
+//   source    String
+//   meta      Json?
+//   imageUrl  String?
+//   userId    String
+//   user      User     @relation(fields: [userId], references: [id])
+//   createdAt DateTime @default(now())
+// }
+
+// model Streak {
+//   id             String   @id @default(cuid())
+//   userId         String   @unique
+//   user           User     @relation(fields: [userId], references: [id])
+//   currentStreak  Int      @default(0)
+//   longestStreak  Int      @default(0)
+//   lastVisit      DateTime?
+//   totalVisits    Int      @default(0)
+//   updatedAt      DateTime @updatedAt
+// }

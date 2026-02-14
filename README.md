@@ -1,70 +1,102 @@
-# Getting Started with Create React App
+# ChaosHub — Retro Chaos Playground
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A retro meme culture × old money chaos playground. Generate jokes, excuses, roasts, memes, and facts — all in one curated experience.
 
-## Available Scripts
+## Quick Start
 
-In the project directory, you can run:
+```bash
+# Install dependencies
+npm install
 
-### `npm start`
+# Create env file (optional — app works without it)
+cp .env.example .env.local
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Run dev server
+npm run dev
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Open [http://localhost:3000](http://localhost:3000) — you'll be redirected to `/daily`.
 
-### `npm test`
+## Environment Variables
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `IMGFLIP_USERNAME` | No | Imgflip account username for server-side meme generation |
+| `IMGFLIP_PASSWORD` | No | Imgflip account password |
 
-### `npm run build`
+Without Imgflip credentials, the Meme Lab uses client-side canvas rendering (preview mode).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## API Integrations
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Endpoint | Upstream API | Rate Limits |
+|----------|-------------|-------------|
+| `/api/jokes/chucknorris` | api.chucknorris.io | None documented |
+| `/api/jokes/yomomma` | yomama-jokes.com | Fallback if down |
+| `/api/excuse` | excuser-three.vercel.app | None documented |
+| `/api/buzz` | corporatebs-generator.samerat.com | Fallback if down |
+| `/api/techy` | techy-api.vercel.app | Fallback if down |
+| `/api/facts` | uselessfacts.jsph.pl | None documented |
+| `/api/memes/templates` | api.imgflip.com | Cached 1hr |
+| `/api/memes/create` | api.imgflip.com | Requires credentials |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+All external APIs are called server-side via Next.js Route Handlers to avoid CORS issues.
+Each handler has error handling with fallback content where applicable.
 
-### `npm run eject`
+## App Sections
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **/daily** — Daily Chaos (landing). 4 cards + streak tracking + daily challenge
+- **/excuses** — Excuse Generator. Situation picker, tone slider, corporate polish
+- **/roast** — Roast Zone. Target name, intensity selector
+- **/memes** — Meme Lab. Template grid, text overlay, canvas preview + export
+- **/facts** — Fact or Cap. True/Cap guessing game with streak tracking
+- **/vault** — Favorites. Saved items with filters, copy, delete
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Data Persistence
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Currently uses `localStorage` for:
+- Favorites / saved items
+- Streak tracking (daily visits, daily challenge)
+- Fact game stats
+- Daily content cache
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+A Prisma schema is scaffolded at `prisma/schema.prisma` for future PostgreSQL sync.
 
-## Learn More
+## Deployment
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Docker
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+docker build -t chaoshub .
+docker run -p 3000:3000 chaoshub
+```
 
-### Code Splitting
+### Docker Compose
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+docker-compose up -d
+```
 
-### Analyzing the Bundle Size
+This starts the app on port 3000, with an optional PostgreSQL container for future DB sync.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Manual
 
-### Making a Progressive Web App
+```bash
+npm run build
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Tech Stack
 
-### Advanced Configuration
+- **Next.js 16** (App Router)
+- **TypeScript**
+- **TailwindCSS v4**
+- **Framer Motion** — animations
+- **html-to-image** — card export
+- **Prisma** — DB scaffold (optional)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Design
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Typography**: Playfair Display (headings) + Inter (body)
+- **Palette**: Deep espresso/charcoal backgrounds, brass/gold accents, vintage green + burgundy secondary
+- **Texture**: SVG noise overlay for retro grain feel
+- **Animations**: Page transitions, card reveals, button micro-interactions via Framer Motion
